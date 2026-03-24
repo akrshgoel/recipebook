@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Image, ScrollView, SafeAreaView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'; // Required for Search and Back icons
 
+
+const API_KEY = '05be1ab85feb409da9e024ca12f2fe32';
 const Stack = createStackNavigator();
+
 
 function HomeScreen({ navigation }) {
   const [search, setSearch] = useState('');
@@ -12,8 +15,9 @@ function HomeScreen({ navigation }) {
 
   const fetchRecipes = async () => {
     try {
+
       const response = await fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?query=${search}&apiKey=05be1ab85feb409da9e024ca12f2fe32`
+        `https://api.spoonacular.com/recipes/complexSearch?query=${search}&apiKey=${API_KEY}`
       );
       const data = await response.json();
       setRecipes(data.results || []);
@@ -25,6 +29,7 @@ function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Recipe Finder</Text>
+
 
       <View style={styles.searchWrapper}>
         <Ionicons name="search-outline" size={20} color="#999" />
@@ -38,6 +43,7 @@ function HomeScreen({ navigation }) {
           <Text style={styles.buttonText}>Go</Text>
         </TouchableOpacity>
       </View>
+
 
       <FlatList
         data={recipes}
@@ -59,12 +65,14 @@ function HomeScreen({ navigation }) {
   );
 }
 
+
 function DetailsScreen({ route, navigation }) {
   const { recipeId } = route.params;
   const [details, setDetails] = useState(null);
 
   useEffect(() => {
-    fetch(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=05be1ab85feb409da9e024ca12f2fe32`)
+
+    fetch(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${API_KEY}`)
       .then(res => res.json())
       .then(data => setDetails(data))
       .catch(err => console.error(err));
@@ -79,12 +87,14 @@ function DetailsScreen({ route, navigation }) {
         <Text style={styles.detailTitle}>{details.title}</Text>
         <Text style={styles.sectionHeader}>Instructions</Text>
         <Text style={styles.instructionText}>
+
           {details.instructions ? details.instructions.replace(/<[^>]*>?/gm, '') : "No instructions available."}
         </Text>
       </View>
     </ScrollView>
   );
 }
+
 
 export default function App() {
   return (
@@ -101,6 +111,7 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F9F9F9' },
